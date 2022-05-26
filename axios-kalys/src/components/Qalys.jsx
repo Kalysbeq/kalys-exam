@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState , useEffect} from 'react'
 import axios from 'axios'
 import s from "./Qalys.module.css"
 
@@ -6,22 +6,22 @@ import s from "./Qalys.module.css"
  const Qalys = () => {
     const url = "https://jsonplaceholder.typicode.com/posts"
     const [posts, setPosts] = useState([])
-    axios.get(url).then(res => {
-        setPosts(posts => posts = res.data)
-    })
+
+    useEffect(()=>{
+        axios.get(url).then(res => {
+            setPosts(posts => posts = res.data)
+        })
+    },[setPosts])
 
 
-    const deletePost = (id)=>{
-        
-         setPosts(
-         posts.filter((post)=>{
-             if(post.id != id){
-                 return post
-             }
-         })
-     ) 
-        
+    const removeData = (id) => {
+
+        axios.delete(`${url}/${id}`).then(res => {
+            const del = posts.filter(employee => id !== employee.id)
+            setPosts(del)
+        })
     }
+    
     return (
         <div>
             <p className={s.text__post} style={{textAlign:"center"}}>Общий список</p>
@@ -39,7 +39,7 @@ import s from "./Qalys.module.css"
                             <h2 >{post.title}</h2>
                             <h3>{post.body}</h3>
                             <div className={s.btn}>
-                                <button className={s.button} onClick={()=>deletePost(post.id)} >Knopochka</button>
+                                <button className={s.button} onClick={()=>removeData(post.id)} >Knopochka</button>
                             </div>
                           
 
